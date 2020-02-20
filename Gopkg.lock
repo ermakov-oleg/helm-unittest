@@ -287,7 +287,7 @@
     "pkg/timeconv",
     "pkg/version",
   ]
-  pruneopts = ""'
+  pruneopts = ""
   revision = "1ee0254c86d4ed6887327dabed7aa7da29d7eb0d"
   version = "v2.16.3"
 
