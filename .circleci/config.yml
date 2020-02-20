@@ -2,8 +2,8 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/golang:1.12
-    working_directory: /go/src/github.com/lrills/helm-unittest
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/ermakov-oleg/helm-unittest
     steps:
       - checkout
       - run:
@@ -26,7 +26,7 @@ jobs:
       - save_cache:
           key: helm-untt-deps-{{ .Branch }}-{{ checksum "Gopkg.lock" }}
           paths:
-            - /go/src/github.com/lrills/helm-unittest/vendor
+            - /go/src/github.com/ermakov-oleg/helm-unittest/vendor
       - run:
           name: Test
           command: go test -v ./unittest/...
@@ -37,7 +37,7 @@ jobs:
   distribute:
     docker:
       - image: golang:1.10
-    working_directory: /go/src/github.com/lrills/helm-unittest
+    working_directory: /go/src/github.com/ermakov-oleg/helm-unittest
     steps:
       - checkout
       - restore_cache:
