@@ -1,5 +1,8 @@
 # helm unittest
 
+[![CircleCI](https://circleci.com/gh/ermakov-oleg/helm-unittest.svg?style=svg)](https://circleci.com/gh/ermakov-oleg/helm-unittest)
+
+
 Unit test for *helm chart* in YAML to keep your chart consistent and robust!
 
 Feature:
