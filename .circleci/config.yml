@@ -3,12 +3,18 @@ jobs:
   test:
     docker:
       - image: circleci/golang:1.13
+        environment:
+          GO111MODULE: "on"
     working_directory: /go/src/github.com/ermakov-oleg/helm-unittest
     steps:
       - checkout
       - run:
           name: Test
           command: go test -v ./unittest/...
+      - save_cache:
+          key: go-mod-v1-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
       - run:
           name: Check formated
           command: "! gofmt -l . 2>&1 | read"
@@ -19,6 +25,9 @@ jobs:
     working_directory: /go/src/github.com/ermakov-oleg/helm-unittest
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v1-{{ checksum "go.sum" }}
       - run:
           name: Insatll ghr
           command: go get -u github.com/tcnksm/ghr
