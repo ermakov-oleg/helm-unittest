@@ -87,12 +87,12 @@ func (t *TestJob) Run(
 }
 
 // liberally borrows from helm-template
-func (t *TestJob) getUserValues() (map[string]interface{}, error) {
-	base := map[string]interface{}{}
+func (t *TestJob) getUserValues() (map[interface{}]interface{}, error) {
+	base := map[interface{}]interface{}{}
 	routes := spliteChartRoutes(t.chartRoute)
 
 	for _, specifiedPath := range t.Values {
-		value := map[string]interface{}{}
+		value := map[interface{}]interface{}{}
 		var valueFilePath string
 		if path.IsAbs(specifiedPath) {
 			valueFilePath = specifiedPath
@@ -102,11 +102,11 @@ func (t *TestJob) getUserValues() (map[string]interface{}, error) {
 
 		bytes, err := ioutil.ReadFile(valueFilePath)
 		if err != nil {
-			return map[string]interface{}{}, err
+			return map[interface{}]interface{}{}, err
 		}
 
 		if err := yaml.Unmarshal(bytes, &value); err != nil {
-			return map[string]interface{}{}, fmt.Errorf("failed to parse %s: %s", specifiedPath, err)
+			return map[interface{}]interface{}{}, fmt.Errorf("failed to parse %s: %s", specifiedPath, err)
 		}
 		base = valueutils.MergeValues(base, scopeValuesWithRoutes(routes, value))
 	}
@@ -114,19 +114,49 @@ func (t *TestJob) getUserValues() (map[string]interface{}, error) {
 	for path, valus := range t.Set {
 		setMap, err := valueutils.BuildValueOfSetPath(valus, path)
 		if err != nil {
-			return map[string]interface{}{}, err
+			return map[interface{}]interface{}{}, err
 		}
 
 		base = valueutils.MergeValues(base, scopeValuesWithRoutes(routes, setMap))
 	}
 	return base, nil
 }
+func cleanupInterfaceArray(in []interface{}) []interface{} {
+	res := make([]interface{}, len(in))
+	for i, v := range in {
+		res[i] = cleanupMapValue(v)
+	}
+	return res
+}
+
+func cleanupInterfaceMap(in map[interface{}]interface{}) map[string]interface{} {
+	res := make(map[string]interface{})
+	for k, v := range in {
+		res[fmt.Sprintf("%v", k)] = cleanupMapValue(v)
+	}
+	return res
+}
+
+func cleanupMapValue(v interface{}) interface{} {
+	switch v := v.(type) {
+	case []interface{}:
+		return cleanupInterfaceArray(v)
+	case map[interface{}]interface{}:
+		return cleanupInterfaceMap(v)
+	case string:
+		return v
+	default:
+		return v
+	}
+}
 
 // render the chart and return result map
-func (t *TestJob) renderChart(targetChart *chart.Chart, userValues map[string]interface{}) (map[string]string, error) {
+func (t *TestJob) renderChart(targetChart *chart.Chart, userValues map[interface{}]interface{}) (map[string]string, error) {
 	options := *t.releaseOption()
 
-	vals, err := chartutil.ToRenderValues(targetChart, userValues, options, nil)
+	values := cleanupMapValue(userValues).(map[string]interface{})
+
+	vals, err := chartutil.ToRenderValues(targetChart, values, options, nil)
 	if err != nil {
 		return nil, err
 	}
