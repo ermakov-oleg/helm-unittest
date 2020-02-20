@@ -8,6 +8,9 @@ jobs:
     working_directory: /go/src/github.com/ermakov-oleg/helm-unittest
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v1-{{ checksum "go.sum" }}
       - run:
           name: Test
           command: go test -v ./unittest/...
