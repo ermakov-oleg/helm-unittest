@@ -31,12 +31,12 @@ func TestGetValueOfSetPath(t *testing.T) {
 
 func TestBuildValueOfSetPath(t *testing.T) {
 	a := assert.New(t)
-	data := map[interface{}]interface{}{"foo": "bar"}
+	data := map[string]interface{}{"foo": "bar"}
 
 	var expectionsMapping = map[string]interface{}{
-		"a.b":    map[interface{}]interface{}{"a": map[interface{}]interface{}{"b": data}},
-		"a[1]":   map[interface{}]interface{}{"a": []interface{}{nil, data}},
-		"a[1].b": map[interface{}]interface{}{"a": []interface{}{nil, map[interface{}]interface{}{"b": data}}},
+		"a.b":    map[string]interface{}{"a": map[string]interface{}{"b": data}},
+		"a[1]":   map[string]interface{}{"a": []interface{}{nil, data}},
+		"a[1].b": map[string]interface{}{"a": []interface{}{nil, map[string]interface{}{"b": data}}},
 	}
 
 	for path, expected := range expectionsMapping {

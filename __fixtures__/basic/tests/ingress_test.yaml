@@ -48,8 +48,12 @@ tests:
       ingress.enabled: true
       ingress.tls:
         - secretName: my-tls-secret
+          hosts:
+            - chart-example.local
     asserts:
       - equal:
           path: spec.tls
           value:
             - secretName: my-tls-secret
+              hosts:
+                - chart-example.local

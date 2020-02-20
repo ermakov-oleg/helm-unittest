@@ -64,8 +64,8 @@ func TestRunnerOkWithPassedTests(t *testing.T) {
 		},
 	}
 	passed := runner.Run([]string{"../__fixtures__/basic"})
-	assert.True(t, passed)
 	cupaloy.SnapshotT(t, makeOutputSnapshotable(buffer.String())...)
+	assert.True(t, passed)
 }
 
 func TestRunnerOkWithFailedTests(t *testing.T) {
@@ -91,8 +91,8 @@ func TestRunnerWithTestsInSubchart(t *testing.T) {
 		},
 	}
 	passed := runner.Run([]string{"../__fixtures__/with-subchart"})
-	assert.True(t, passed)
 	cupaloy.SnapshotT(t, makeOutputSnapshotable(buffer.String())...)
+	assert.True(t, passed)
 }
 
 func TestRunnerWithTestsInSubchartButFlagFalse(t *testing.T) {
@@ -105,6 +105,6 @@ func TestRunnerWithTestsInSubchartButFlagFalse(t *testing.T) {
 		},
 	}
 	passed := runner.Run([]string{"../__fixtures__/with-subchart"})
-	assert.True(t, passed)
 	cupaloy.SnapshotT(t, makeOutputSnapshotable(buffer.String())...)
+	assert.True(t, passed)
 }

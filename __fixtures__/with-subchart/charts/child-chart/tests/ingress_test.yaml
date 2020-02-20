@@ -9,8 +9,7 @@ tests:
 
   - it: should render Ingress right if enabled
     set:
-      ingress:
-        enabled: true
+      ingress.enabled: true
       service:
         externalPort: 12345
     release:
@@ -32,12 +31,11 @@ tests:
 
   - it: should set annotations if given
     set:
-      ingress:
-        enabled: true
-        annotations:
-          kubernetes.io/ingress.class: nginx
-          kubernetes.io/tls-acme: "true"
-          ingress.kubernetes.io/rewrite-target: /
+      ingress.enabled: true
+      ingress.annotations:
+        kubernetes.io/ingress.class: nginx
+        kubernetes.io/tls-acme: "true"
+        ingress.kubernetes.io/rewrite-target: /
     asserts:
       - equal:
           path: metadata.annotations
@@ -46,12 +44,15 @@ tests:
 
   - it: should set tls if given
     set:
-      ingress:
-        enabled: true
-        tls:
-          - secretName: my-tls-secret
+      ingress.enabled: true
+      ingress.tls:
+        - secretName: my-tls-secret
+          hosts:
+            - chart-example.local
     asserts:
       - equal:
           path: spec.tls
           value:
             - secretName: my-tls-secret
+              hosts:
+                - chart-example.local

@@ -1,6 +1,7 @@
 package unittest_test
 
 import (
+	"helm.sh/helm/v3/pkg/chart/loader"
 	"io/ioutil"
 	"path"
 	"testing"
@@ -10,7 +11,6 @@ import (
 	"github.com/lrills/helm-unittest/unittest/snapshot"
 	"github.com/stretchr/testify/assert"
 	yaml "gopkg.in/yaml.v2"
-	"k8s.io/helm/pkg/chartutil"
 )
 
 var tmpdir, _ = ioutil.TempDir("", "_suite_tests")
@@ -26,7 +26,7 @@ func TestParseTestSuiteFileOk(t *testing.T) {
 }
 
 func TestRunSuiteWhenPass(t *testing.T) {
-	c, _ := chartutil.Load("../__fixtures__/basic")
+	c, _ := loader.Load("../__fixtures__/basic")
 	suiteDoc := `
 suite: test suite name
 templates:
@@ -60,7 +60,7 @@ tests:
 }
 
 func TestRunSuiteWhenFail(t *testing.T) {
-	c, _ := chartutil.Load("../__fixtures__/basic")
+	c, _ := loader.Load("../__fixtures__/basic")
 	suiteDoc := `
 suite: test suite name
 templates:
